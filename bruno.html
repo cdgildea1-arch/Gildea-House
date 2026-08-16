@@ -1,7 +1,48 @@
-<a href="bruno.html">
+<section id="bruno-intro" style="
+  width:100%;
+  min-height:100vh;
+  background:#111;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  text-align:center;
+  box-sizing:border-box;
+">
+
   <img
-    src="images/bruno-anniversary.png"
-    alt="A message from Bruno"
-    style="width:100%; max-width:420px; border-radius:18px;"
+    src="bruno-anniversary.png"
+    alt="Bruno"
+    style="
+      display:block;
+      width:100%;
+      max-width:600px;
+      height:auto;
+      border-radius:22px;
+      box-shadow:0 15px 50px rgba(0,0,0,.35);
+    "
   >
-</a>
+
+  <button
+    type="button"
+    onclick="
+      document.getElementById('bruno-intro').style.display='none';
+      window.scrollTo(0,0);
+    "
+    style="
+      margin-top:20px;
+      padding:14px 24px;
+      background:white;
+      color:#172035;
+      border:0;
+      border-radius:999px;
+      font-weight:800;
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      cursor:pointer;
+    "
+  >
+    Enter Gildea Home ↓
+  </button>
+
+</section>
