@@ -1,286 +1,34 @@
-<!doctype html> <html lang="en"> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"> <meta name="theme-color" content="#172035"> <meta name="description" content="A playful household dashboard for the Gildea family."> <title>Gildea Home</title> <style>:root{--ink:#172035;--muted:#788195;--line:#e7eaf0;--paper:#fff;--wash:#f4f6fa;--blue:#5578dc;--blue-soft:#eef2ff;--coral:#f1786f;--coral-soft:#fff0ee;--gold:#e8ad42;--gold-soft:#fff6e4;--green:#579577;--green-soft:#eaf7f0;--shadow:0 14px 42px rgba(34,45,70,.08);--radius:20px}*{box-sizing:border-box}html{background:var(--wash);scroll-behavior:smooth}body{margin:0;min-height:100vh;background:var(--wash);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}button{color:inherit}.hidden{display:none!important}.app{min-height:100vh;display:grid;grid-template-columns:245px 1fr}aside{position:sticky;top:0;height:100vh;padding:28px 20px 24px;background:var(--paper);border-right:1px solid var(--line);display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:12px;border:0;background:0 0;padding:0;text-align:left;cursor:pointer}.mark{width:41px;height:41px;border-radius:13px;display:grid;place-items:center;background:var(--ink);color:#fff;font:700 24px Georgia,serif;box-shadow:0 8px 20px rgba(23,32,53,.18)}.brand strong{display:grid;font:600 20px Georgia,serif;line-height:1}.brand small{margin-top:5px;color:var(--muted);font:700 9px Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase}.eyebrow,.side-label{margin:0;color:#939bac;font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.side-label{margin:48px 13px 11px}.side-nav{display:grid;gap:6px}.side-nav button{border:0;border-radius:12px;background:0 0;padding:11px 13px;display:flex;align-items:center;gap:12px;color:#6f788c;font-size:14px;font-weight:650;text-align:left;cursor:pointer}.side-nav button span{width:21px;font-size:18px;text-align:center}.side-nav button:hover{background:#f7f8fb;color:var(--ink)}.side-nav button.active{background:var(--blue-soft);color:var(--blue)}.tiny-card{margin-top:auto;padding:16px;border:1px solid #edf0f5;border-radius:17px;background:#f8f9fc}.tiny-card .faces{display:flex;margin-bottom:12px}.tiny-card .faces i{width:28px;height:28px;margin-right:-5px;border:2px solid #fff;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff;font-size:10px;font-style:normal;font-weight:800}.tiny-card .faces i:nth-child(2){background:var(--coral)}.tiny-card .faces i:last-child{background:#eef0f5;color:var(--muted)}.tiny-card small,.tiny-card strong{display:block}.tiny-card strong{font-size:12px}.tiny-card small{margin-top:4px;color:var(--muted);font-size:10px}.privacy-note{padding:14px 4px 0;color:#9aa2b2;font-size:9px;line-height:1.5}main{min-width:0}.topbar{height:72px;padding:0 40px;display:flex;align-items:center;justify-content:flex-end;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:blur(16px);position:sticky;top:0;z-index:10}.mobile-brand{display:none}.top-actions{display:flex;align-items:center;gap:12px}.date-chip{padding:9px 12px;border:1px solid var(--line);border-radius:99px;background:#fff;color:var(--muted);font-size:11px;font-weight:650}.avatar{width:36px;height:36px;border:0;border-radius:50%;background:var(--ink);color:#fff;font-size:10px;font-weight:800}.content{width:min(1130px,100%);margin:auto;padding:42px 40px 76px}.view{animation:rise .3s ease}.heading{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:28px}.heading h1{margin:8px 0 8px;font:500 clamp(34px,4vw,47px)/1.04 Georgia,serif;letter-spacing:-.035em}.sub{margin:0;color:var(--muted);font-size:14px;line-height:1.55}.primary,.secondary{border:0;border-radius:12px;padding:12px 17px;font-size:12px;font-weight:800;cursor:pointer}.primary{background:var(--ink);color:#fff;box-shadow:0 8px 18px rgba(23,32,53,.17)}.primary:hover{transform:translateY(-1px);background:#27324d}.secondary{border:1px solid var(--line);background:#fff;color:var(--blue)}.week{margin-bottom:18px;padding:9px 11px;display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 8px 28px rgba(35,45,68,.035)}.week div{min-height:67px;display:grid;place-content:center;justify-items:center;gap:4px;border-right:1px solid #f0f2f6;border-radius:12px}.week div:last-child{border:0}.week small{color:var(--muted);font-size:9px;font-weight:800;text-transform:uppercase}.week b{font:600 17px Georgia,serif}.week .today{background:var(--ink);color:#fff;border-color:transparent;box-shadow:0 7px 18px rgba(23,32,53,.2)}.week .today small{color:#ccd2df}.week i{width:4px;height:4px;border-radius:50%;background:var(--gold)}.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.card{border:1px solid var(--line);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);overflow:hidden}.pad{padding:23px}.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.card-head h2{margin:5px 0 0;font:550 22px Georgia,serif;letter-spacing:-.02em}.icon-button{width:32px;height:32px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--blue);font-size:18px;cursor:pointer}.text-button{border:0;background:0 0;color:var(--blue);font-size:10px;font-weight:800;cursor:pointer}.stat-row{margin-top:17px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:13px;border:1px solid #edf0f5;border-radius:13px;background:#fafbfc;display:grid;grid-template-columns:37px 1fr;gap:10px;align-items:center}.stat i{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--blue-soft);font-style:normal}.stat:nth-child(2) i{background:var(--coral-soft)}.stat:nth-child(3) i{background:var(--gold-soft)}.stat b,.stat small{display:block}.stat small{color:var(--muted);font-size:8px;font-weight:800;letter-spacing:.08em}.stat b{margin-top:4px;font-size:10px}.check-list{margin-top:13px}.check-row{position:relative;min-height:57px;display:grid;grid-template-columns:22px 1fr auto;gap:11px;align-items:center;border-top:1px solid #eff1f5;cursor:pointer}.check-row:first-child{border:0}.check-row input{position:absolute;opacity:0}.box{width:20px;height:20px;border:1.5px solid #cfd4df;border-radius:6px;display:grid;place-items:center;color:transparent;font-size:11px}.check-row.done .box{border-color:var(--green);background:var(--green);color:#fff}.check-row b,.check-row small{display:block}.check-row b{font-size:12px}.check-row small{margin-top:4px;color:var(--muted);font-size:9px;font-weight:500}.check-row.done b{color:#a1a8b6;text-decoration:line-through}.delete{border:0;background:0 0;color:#bbc0cb;font-size:16px;cursor:pointer}.delete:hover{color:var(--coral)}.note-card{position:relative;padding:24px;background:linear-gradient(135deg,#eef2ff,#f4f0ff);border-color:#e2e6f7}.note-card:after{content:"";position:absolute;right:-70px;top:-80px;width:160px;height:160px;border:28px solid rgba(85,120,220,.06);border-radius:50%}.note-card blockquote{position:relative;z-index:1;margin:17px 0 22px;font:400 20px/1.4 Georgia,serif}.note-card footer{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:9px}.note-card footer i{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:var(--coral);color:#fff;font-style:normal;font-weight:800}.note-card footer button{margin-left:auto;border:0;background:0 0;color:var(--blue);font-size:10px;font-weight:800;cursor:pointer}.dinner-card{display:grid;grid-template-columns:1fr 150px;align-items:center;gap:16px;background:linear-gradient(135deg,#fffaf0,#fff2e8)}.dinner-card h2{margin:7px 0 7px;font:550 24px Georgia,serif}.dinner-card p{margin:0;color:var(--muted);font-size:11px}.plate{width:120px;height:120px;margin:auto;border:10px solid #fff;border-radius:50%;display:grid;place-items:center;background:#f7d87e;box-shadow:inset 0 0 0 2px #edc861,0 12px 30px rgba(92,66,20,.13);font-size:42px}.wide{grid-column:1/-1}.forms-grid,.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}.list-card{padding:23px}.inline-form{margin-top:17px;display:grid;grid-template-columns:1fr auto;gap:8px}.field,.inline-form input{width:100%;padding:12px 13px;border:1px solid #dfe3eb;border-radius:11px;background:#fff;outline:0;font-size:12px}.field:focus,.inline-form input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}.inline-form button{width:42px;border:0;border-radius:11px;background:var(--ink);color:#fff;font-size:19px;font-weight:700;cursor:pointer}.empty{padding:22px 0;color:var(--muted);font-size:11px;text-align:center}.event-form{margin-top:18px;display:grid;grid-template-columns:150px 1fr auto;gap:9px}.event-form button{padding-inline:18px}.event-list{margin-top:17px}.event{min-height:65px;display:grid;grid-template-columns:50px 1fr auto;gap:13px;align-items:center;border-top:1px solid #eff1f5}.event:first-child{border:0}.event time{width:45px;height:45px;border-radius:12px;display:grid;place-content:center;justify-items:center;background:var(--blue-soft);color:var(--blue)}.event time b{font:600 17px Georgia,serif}.event time small{font-size:7px;font-weight:800;text-transform:uppercase}.event>div b,.event>div small{display:block}.event>div b{font-size:12px}.event>div small{margin-top:4px;color:var(--muted);font-size:9px}.fun-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.roulette{padding:28px;text-align:center;background:linear-gradient(150deg,#172035,#28395d);color:#fff}.roulette .eyebrow{color:#aebbd9}.roulette-display{min-height:125px;display:grid;place-content:center}.roulette-display span{font-size:42px}.roulette-display h2{margin:9px 0 0;font:500 29px Georgia,serif}.roulette button{background:#fff;color:var(--ink);box-shadow:none}
+from pathlib import Path
+from IPython.display import Markdown, display
 
-/* Existing full site styling and application code continues here exactly as in your uploaded website,
-   with Merritt’s Closet replacing the old Holland / Merrit wording throughout. */
+s = Path("/mnt/data/Gildea-Home-Merritt-PHONE-FIX.html").read_text(encoding="utf-8")
 
-</style>
-</head>
-<body>
+# Split only at existing spaces/newlines so pasting the chunks back-to-back
+# cannot cut through a word, tag name, CSS token, or JS identifier.
+# We choose boundaries near equal sizes and INCLUDE the original whitespace
+# in the preceding chunk, so no content is lost.
+n_parts = 5
+target = len(s) // n_parts
+cuts = [0]
 
-<div class="app">
+for k in range(1, n_parts):
+    ideal = k * target
+    # Find nearest existing whitespace around the ideal point.
+    candidates = []
+    for d in range(0, 5000):
+        for pos in (ideal - d, ideal + d):
+            if cuts[-1] < pos < len(s) and s[pos].isspace():
+                candidates.append(pos + 1)  # keep whitespace in preceding chunk
+                break
+        if candidates:
+            break
+    cuts.append(candidates[0])
 
-  <aside>
-    <button class="brand" data-go="today">
-      <span class="mark">G</span>
-      <span>
-        <strong>Gildea Home</strong>
-        <small>Household Hub</small>
-      </span>
-    </button>
+cuts.append(len(s))
+parts = [s[cuts[i]:cuts[i+1]] for i in range(n_parts)]
 
-    <p class="side-label">Household</p>
+# Render ordinary copyable Markdown code boxes.
+for i, part in enumerate(parts, 1):
+    display(Markdown(f"### PART {i} OF {n_parts}\n```html\n{part}\n```"))
 
-    <nav class="side-nav">
-      <button class="active" data-go="today"><span>⌂</span>Today</button>
-      <button data-go="calendar"><span>□</span>Calendar</button>
-      <button data-go="lists"><span>✓</span>Lists</button>
-      <button data-go="weekly"><span>☑</span>Weekly</button>
-      <button data-go="fun"><span>✦</span>Fun</button>
-    </nav>
-
-    <div class="tiny-card">
-      <div class="faces">
-        <i>C</i>
-        <i>K</i>
-        <i>+</i>
-      </div>
-      <strong>Gildea Household</strong>
-      <small>One place for the little things.</small>
-    </div>
-  </aside>
-
-  <main>
-    <header class="topbar">
-      <button class="mobile-brand" data-go="today">
-        <span class="mark">G</span>
-        <strong>Gildea Home</strong>
-      </button>
-
-      <div class="top-actions">
-        <div class="date-chip" id="topDate"></div>
-        <button class="avatar">GH</button>
-      </div>
-    </header>
-
-    <div class="content">
-
-      <section class="view" id="todayView">
-
-        <div class="heading">
-          <div>
-            <p class="eyebrow" id="fullDate"></p>
-            <h1 id="greeting">Good afternoon.</h1>
-            <p class="sub">Everything happening around home, in one place.</p>
-          </div>
-        </div>
-
-        <div class="week" id="weekStrip"></div>
-
-        <div class="grid">
-
-          <section class="card pad">
-            <div class="card-head">
-              <div>
-                <p class="eyebrow">HOUSEHOLD STATUS</p>
-                <h2>Where everybody is</h2>
-              </div>
-            </div>
-
-            <div id="statusGrid"></div>
-          </section>
-
-          <section class="card note-card">
-            <p class="eyebrow">HOUSE NOTE</p>
-            <blockquote id="homeNote">Little things live here.</blockquote>
-            <footer>
-              <i>GH</i>
-              <span>Gildea Home</span>
-              <button id="editNote">Edit note</button>
-            </footer>
-          </section>
-
-          <section class="card pad wide" style="background:linear-gradient(135deg,#faf5ff,#f3f5ff)">
-            <div class="card-head">
-              <div>
-                <p class="eyebrow">TINY WARDROBE DEPARTMENT</p>
-                <h2 id="closetBannerTitle">Merritt’s Closet</h2>
-              </div>
-              <div style="font-size:40px">🎀</div>
-            </div>
-
-            <p class="sub" style="margin-top:14px">
-              Photograph the onesies, keep track of sizes, and try favorites on the little preview baby.
-            </p>
-
-            <button class="primary" data-go="closet" style="margin-top:18px;width:100%">
-              Open closet →
-            </button>
-          </section>
-
-        </div>
-      </section>
-
-
-      <section class="view hidden" id="closetView">
-
-        <div class="heading">
-          <div>
-            <p class="eyebrow">TINY WARDROBE DEPARTMENT</p>
-            <h1 id="closetPageTitle">Merritt’s Closet</h1>
-            <p class="sub">Tiny outfits, documented appropriately seriously.</p>
-          </div>
-        </div>
-
-        <section class="card pad">
-          <form id="closetNameForm">
-            <label class="eyebrow">CLOSET NAME</label>
-            <div class="inline-form">
-              <input
-                id="closetName"
-                value="Merritt’s Closet"
-                placeholder="Merritt’s Closet"
-              >
-              <button type="submit">✓</button>
-            </div>
-          </form>
-        </section>
-
-        <section class="card pad" style="margin-top:18px">
-          <div class="card-head">
-            <div>
-              <p class="eyebrow">OUTFIT PREVIEW</p>
-              <h2>Try it on</h2>
-            </div>
-          </div>
-
-          <div id="closetPreview">
-            <img id="closetPreviewImage" hidden alt="Selected outfit">
-            <div id="closetPreviewPlaceholder">👶</div>
-            <p id="closetPreviewLabel">Choose an outfit below to try it on.</p>
-          </div>
-        </section>
-
-        <section class="card pad" style="margin-top:18px">
-
-          <div class="card-head">
-            <div>
-              <p class="eyebrow">MERRITT'S CLOTHES</p>
-              <h2>Tiny wardrobe</h2>
-            </div>
-
-            <strong>
-              <span id="clothingCount">0</span> items
-            </strong>
-          </div>
-
-          <form id="clothingForm" style="margin-top:20px">
-
-            <input
-              class="field"
-              id="clothingName"
-              placeholder="Outfit name"
-              required
-            >
-
-            <select class="field" id="clothingSize" style="margin-top:10px">
-              <option>Newborn</option>
-              <option>0-3 months</option>
-              <option>3-6 months</option>
-              <option>6-9 months</option>
-              <option>9-12 months</option>
-              <option>12-18 months</option>
-              <option>18-24 months</option>
-              <option>2T</option>
-            </select>
-
-            <select class="field" id="clothingType" style="margin-top:10px">
-              <option>Onesie</option>
-              <option>Shirt</option>
-              <option>Shorts</option>
-              <option>Pants</option>
-              <option>Pajamas</option>
-              <option>Dress</option>
-              <option>Other</option>
-            </select>
-
-            <input
-              type="file"
-              accept="image/*"
-              id="clothingPhotoInput"
-              hidden
-            >
-
-            <button
-              type="button"
-              class="secondary"
-              id="chooseClothingPhoto"
-              style="margin-top:10px;width:100%"
-            >
-              Choose outfit picture
-            </button>
-
-            <p class="sub" id="clothingPhotoName" style="margin:8px 0">
-              Camera or photo library
-            </p>
-
-            <button
-              class="primary"
-              id="saveClothing"
-              type="submit"
-              style="width:100%"
-            >
-              Add outfit
-            </button>
-
-            <p class="sub" id="clothingStatus"></p>
-
-          </form>
-
-          <div id="clothingGrid"></div>
-        </section>
-
-      </section>
-
-    </div>
-  </main>
-</div>
-
-
-<script>
-
-const DEFAULT_CLOSET_NAME = "Merritt’s Closet";
-
-function normalizeClosetName(name){
-  const oldNames = [
-    "Holland / Merrit’s Closet",
-    "Holland / Merritt’s Closet",
-    "Holland / Merrit's Closet",
-    "Holland / Merritt's Closet",
-    "Merrit’s Closet",
-    "Merrit's Closet"
-  ];
-
-  if (!name || oldNames.includes(name.trim())) {
-    return DEFAULT_CLOSET_NAME;
-  }
-
-  return name;
-}
-
-/*
-The remainder of the original Gildea Home application logic remains unchanged.
-The important migration is that any previously saved version of the closet
-name now automatically resolves to Merritt’s Closet.
-*/
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  const banner = document.getElementById("closetBannerTitle");
-  const pageTitle = document.getElementById("closetPageTitle");
-  const input = document.getElementById("closetName");
-
-  let savedName = localStorage.getItem("closetName");
-  savedName = normalizeClosetName(savedName);
-
-  localStorage.setItem("closetName", savedName);
-
-  if (banner) banner.textContent = savedName;
-  if (pageTitle) pageTitle.textContent = savedName;
-  if (input) input.value = savedName;
-
-});
-
-</script>
-
-</body>
-</html>
+print("All 5 parts above together equal the complete replacement index.html.")
