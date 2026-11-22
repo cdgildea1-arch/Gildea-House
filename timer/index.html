@@ -28,7 +28,15 @@ dialog.sheet[open]{display:flex;flex-direction:column}
 .sh h3{flex:1;margin:0;font-size:17px}
 .sb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px max(20px,env(safe-area-inset-bottom))}
 h1{font:700 15px system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:4px 0 12px;display:flex;justify-content:space-between;align-items:baseline}
-h1 span{color:var(--gold);letter-spacing:.04em;text-transform:none;font-size:14px}
+h1{align-items:center}
+h1 .hr{display:flex;align-items:center;gap:10px}
+#todayTot{color:var(--gold);letter-spacing:.04em;text-transform:none;font-size:14px}
+h1 button.small{letter-spacing:0;text-transform:none;min-height:34px}
+.daychips{display:flex;gap:6px;margin-bottom:8px}
+.daychips .chip.on{background:var(--gold);color:#221a05;border-color:var(--gold)}
+.toggle{display:flex;align-items:center;gap:8px;margin-top:12px;font:600 14px system-ui;color:var(--ink)}
+.toggle input{width:20px;height:20px;accent-color:var(--gold)}
+#dlg{max-height:calc(100dvh - 24px);overflow-y:auto}
 h2{font:700 12px system-ui;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:0 0 10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px}
 input,textarea{width:100%;background:#0f1012;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:16px system-ui}
@@ -71,6 +79,9 @@ button.small{min-height:36px;font-size:13px;padding:0 12px;flex:none;border-radi
 .row{display:flex;gap:10px}.row>div{flex:1;min-width:0}
 .tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
 dialog{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;width:min(560px,calc(100% - 24px));padding:16px}
+[hidden]{display:none!important}
+#toast{position:fixed;left:50%;top:max(64px,calc(env(safe-area-inset-top) + 56px));transform:translate(-50%,-20px);background:var(--gold);color:#221a05;font:700 14px system-ui;padding:10px 16px;border-radius:999px;opacity:0;transition:.2s;pointer-events:none;z-index:9;white-space:nowrap}
+#toast.show{opacity:1;transform:translate(-50%,0)}
 dialog::backdrop{background:rgba(0,0,0,.65)}
 dialog h3{margin:0 0 4px;font-size:17px}
 .hint{font-size:12px;color:var(--dim);margin-top:5px}
@@ -80,7 +91,7 @@ dialog h3{margin:0 0 4px;font-size:17px}
 </head>
 <body>
 <main>
-  <h1>Timer <span id="todayTot"></span></h1>
+  <h1>Timer <span class="hr"><span id="todayTot"></span><button class="small" id="logPast" type="button">+ Log time</button></span></h1>
 
   <section class="card">
     <label for="task" style="margin-top:0">What are you working on?</label>
@@ -125,20 +136,23 @@ dialog h3{margin:0 0 4px;font-size:17px}
 <dialog id="dlg">
   <form method="dialog" id="form">
     <h3 id="dlgTitle">Edit entry</h3>
-    <label for="eTask">Task</label>
-    <input id="eTask" list="taskList" required autocomplete="off">
-    <label for="eNotes">Notes</label>
-    <textarea id="eNotes" rows="3"></textarea>
-    <div class="row">
-      <div><label for="eDate">Date</label><input id="eDate" type="date" required></div>
+    <label for="eTask">What did you work on?</label>
+    <input id="eTask" list="taskList" required autocomplete="off" placeholder="Task">
+    <label>When</label>
+    <div class="daychips">
+      <button type="button" class="chip" data-day="0">Today</button>
+      <button type="button" class="chip" data-day="1">Yesterday</button>
     </div>
-    <div class="row">
-      <div><label for="eStart">Start</label><input id="eStart" type="time" required></div>
-      <div><label for="eEnd">End</label><input id="eEnd" type="time" required></div>
+    <input id="eDate" type="date" required>
+    <label for="eDur">How long</label>
+    <input id="eDur" inputmode="decimal" placeholder="e.g. 2  or  1:30  or  45m" required autocomplete="off">
+    <label class="toggle"><input type="checkbox" id="eTimes"> Add start / end times</label>
+    <div class="row" id="timesRow" hidden>
+      <div><label for="eStart">Start</label><input id="eStart" type="time"></div>
+      <div><label for="eEnd">End</label><input id="eEnd" type="time"></div>
     </div>
-    <label for="eDur">Time worked (h:mm)</label>
-    <input id="eDur" inputmode="decimal" placeholder="1:30" required>
-    <div class="hint">Changing start/end resets this to the difference. Set it lower if you took a break in between.</div>
+    <label for="eNotes">Notes (optional)</label>
+    <textarea id="eNotes" rows="2"></textarea>
     <div class="dbtns">
       <button type="button" class="del" id="eDel">Delete</button>
       <button type="button" id="eCancel">Cancel</button>
@@ -262,7 +276,7 @@ function renderWeek(){
     const list=days[k].sort((x,y)=>y.start-x.start);
     const dt=new Date(list[0].start).toLocaleDateString([], {weekday:'long', month:'short', day:'numeric'});
     return '<div class="day"><div class="dh"><span>'+dt+'</span><span>'+hm(list.reduce((s,e)=>s+e.ms,0))+'</span></div>'+
-      list.map(e=>'<div class="entry" data-id="'+e.id+'"><div class="l"><div class="t">'+esc(e.task)+'</div><div class="m">'+clockTime(e.start)+' – '+clockTime(e.end)+'</div>'+
+      list.map(e=>'<div class="entry" data-id="'+e.id+'"><div class="l"><div class="t">'+esc(e.task)+'</div><div class="m">'+(e.noTime?'Logged manually':clockTime(e.start)+' – '+clockTime(e.end))+'</div>'+
         (e.notes?'<div class="n">'+esc(e.notes)+'</div>':'')+'</div><div class="d">'+hm(e.ms)+'</div></div>').join('')+'</div>';
   }).join('') : '<div class="empty" style="margin-top:10px">No entries this week.</div>';
   $('log').querySelectorAll('.entry').forEach(el=>el.onclick=()=>openEdit(el.dataset.id));
@@ -288,22 +302,36 @@ function spanMs(){
   let a=combine(d,s), b=combine(d,e); if(b<a) b+=864e5; // crossed midnight
   return {a,b};
 }
-['eStart','eEnd','eDate'].forEach(id=>$(id).addEventListener('change', ()=>{ const sp=spanMs(); if(sp) $('eDur').value=hm(sp.b-sp.a); }));
+['eStart','eEnd'].forEach(id=>$(id).addEventListener('change', ()=>{ const sp=spanMs(); if(sp) $('eDur').value=hm(sp.b-sp.a); }));
+function syncDayChips(){
+  const v=$('eDate').value;
+  document.querySelectorAll('[data-day]').forEach(c=>c.classList.toggle('on', v===dayKey(Date.now()-c.dataset.day*864e5)));
+}
+document.querySelectorAll('[data-day]').forEach(c=>c.onclick=()=>{ $('eDate').value=dayKey(Date.now()-c.dataset.day*864e5); syncDayChips(); });
+$('eDate').addEventListener('input', syncDayChips); $('eDate').addEventListener('change', syncDayChips);
+function setTimes(on){
+  $('eTimes').checked=on; $('timesRow').hidden=!on;
+  if(on && !$('eStart').value){ $('eStart').value='09:00'; const ms=parseDur($('eDur').value); const m=ms>0?Math.round(ms/60000):60; const e=9*60+m; $('eEnd').value=pad(Math.floor(e/60)%24)+':'+pad(e%60); }
+}
+$('eTimes').addEventListener('change', ()=>setTimes($('eTimes').checked));
 
 function openEdit(id){
   editingId=id||null;
   const e = id ? S.entries.find(x=>x.id===id) : null;
-  const now=Date.now();
-  $('dlgTitle').textContent = e ? 'Edit entry' : 'Add entry';
+  $('dlgTitle').textContent = e ? 'Edit entry' : 'Log time';
   $('eDel').style.display = e ? '' : 'none';
-  $('eTask').value = e ? e.task : ($('task').value||'');
-  $('eNotes').value = e ? e.notes : '';
-  const st = e ? e.start : now-3600000, en = e ? e.end : now;
-  $('eDate').value=toDateInput(st); $('eStart').value=toTimeInput(st); $('eEnd').value=toTimeInput(en);
-  $('eDur').value = hm(e ? e.ms : en-st);
+  $('eTask').value = e ? e.task : '';
+  $('eNotes').value = e ? (e.notes||'') : '';
+  $('eDate').value = dayKey(e ? e.start : Date.now());
+  $('eDur').value = e ? hm(e.ms) : '';
+  $('eStart').value = e && !e.noTime ? toTimeInput(e.start) : '';
+  $('eEnd').value = e && !e.noTime ? toTimeInput(e.end) : '';
+  setTimes(!!(e && !e.noTime));
+  syncDayChips();
   $('dlg').showModal();
 }
 $('addBtn').onclick=()=>openEdit(null);
+$('logPast').onclick=()=>openEdit(null);
 $('eCancel').onclick=()=>$('dlg').close();
 $('eDel').onclick=()=>{
   if(!editingId) return;
@@ -312,23 +340,31 @@ $('eDel').onclick=()=>{
 };
 $('form').addEventListener('submit', ev=>{
   ev.preventDefault();
-  const sp=spanMs(), ms=parseDur($('eDur').value), task=$('eTask').value.trim();
-  if(!task || !sp){ return; }
-  if(!(ms>=0)){ $('eDur').focus(); return; }
-  const rec={task, notes:$('eNotes').value.trim(), start:sp.a, end:sp.b, ms};
+  const task=$('eTask').value.trim(), date=$('eDate').value, ms=parseDur($('eDur').value);
+  if(!task){ $('eTask').focus(); return; }
+  if(!date){ $('eDate').focus(); return; }
+  if(!(ms>0)){ $('eDur').value=''; $('eDur').placeholder='Enter hours, e.g. 2 or 1:30'; $('eDur').focus(); return; }
+  let rec;
+  const sp = $('eTimes').checked ? spanMs() : null;
+  if(sp) rec={task, notes:$('eNotes').value.trim(), start:sp.a, end:sp.b, ms, noTime:false};
+  else { const a=combine(date,'12:00'); rec={task, notes:$('eNotes').value.trim(), start:a, end:a+ms, ms, noTime:true}; }
   if(editingId){ Object.assign(S.entries.find(x=>x.id===editingId), rec); }
   else { S.entries.push({id:uid(), ...rec}); }
-  // jump the week view to wherever the entry landed
-  const d=new Date(sp.a); d.setHours(0,0,0,0); d.setDate(d.getDate()-(d.getDay()+6)%7);
+  const d=new Date(rec.start); d.setHours(0,0,0,0); d.setDate(d.getDate()-(d.getDay()+6)%7);
   weekOffset=Math.min(0, Math.round((d.getTime()-weekStart(0))/(7*864e5)));
   save(); $('dlg').close(); render();
+  flash('Logged '+hm(ms)+' · '+new Date(rec.start).toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'}));
 });
+function flash(msg){
+  let t=$('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.className='show'; clearTimeout(flash.h); flash.h=setTimeout(()=>t.className='', 2200);
+}
 
 /* ---------- CSV ---------- */
 function csv(list, name){
   const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
   const rows=[['Date','Task','Start','End','Hours','H:MM','Notes']].concat(
-    [...list].sort((a,b)=>a.start-b.start).map(e=>[dayKey(e.start), e.task, clockTime(e.start), clockTime(e.end), (e.ms/3600000).toFixed(2), hm(e.ms), e.notes]));
+    [...list].sort((a,b)=>a.start-b.start).map(e=>[dayKey(e.start), e.task, e.noTime?'':clockTime(e.start), e.noTime?'':clockTime(e.end), (e.ms/3600000).toFixed(2), hm(e.ms), e.notes]));
   const blob=new Blob([rows.map(r=>r.map(q).join(',')).join('\n')], {type:'text/csv'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
