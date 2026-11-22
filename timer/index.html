@@ -15,17 +15,27 @@
 <style>
 :root{color-scheme:dark;--bg:#0f1012;--card:#17181b;--ink:#f3ede0;--dim:#9c958a;--line:#2a2b2f;--gold:#ffcf6e;--go:#5fd68b;--hot:#ff7a45}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,sans-serif}
-main{max-width:640px;margin:0 auto;padding:max(14px,env(safe-area-inset-top)) 14px max(40px,env(safe-area-inset-bottom))}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,sans-serif}
+main{max-width:640px;margin:0 auto;height:100%;height:100dvh;display:flex;flex-direction:column;gap:12px;padding:max(12px,env(safe-area-inset-top)) 14px max(12px,env(safe-area-inset-bottom))}
+main>.card{flex:1;min-height:0;display:flex;flex-direction:column;margin:0}
+.clockwrap{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.tabs{display:flex;gap:10px;flex:none}
+.tabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:58px;background:var(--card)}
+.tabs small{font:600 12px system-ui;color:var(--dim)}
+dialog.sheet{width:100%;max-width:640px;height:100%;max-height:100dvh;margin:0 auto;border:0;border-radius:0;padding:0;background:var(--bg)}
+dialog.sheet[open]{display:flex;flex-direction:column}
+.sh{display:flex;align-items:center;gap:8px;padding:max(12px,env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--line)}
+.sh h3{flex:1;margin:0;font-size:17px}
+.sb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px max(20px,env(safe-area-inset-bottom))}
 h1{font:700 15px system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:4px 0 12px;display:flex;justify-content:space-between;align-items:baseline}
 h1 span{color:var(--gold);letter-spacing:.04em;text-transform:none;font-size:14px}
 h2{font:700 12px system-ui;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:0 0 10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px}
 input,textarea{width:100%;background:#0f1012;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:16px system-ui}
-textarea{resize:vertical;min-height:44px}
+textarea{resize:none;min-height:44px}
 input:focus,textarea:focus{outline:none;border-color:var(--gold)}
 label{display:block;font:600 12px system-ui;color:var(--dim);margin:10px 0 5px}
-.clock{font:700 56px ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center;letter-spacing:.02em;margin:16px 0 4px;font-variant-numeric:tabular-nums}
+.clock{font:700 clamp(44px,15vw,64px) ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center;letter-spacing:.02em;margin:16px 0 4px;font-variant-numeric:tabular-nums}
 .status{text-align:center;font:600 13px system-ui;color:var(--dim);min-height:18px;margin-bottom:12px}
 .status.run{color:var(--go)} .status.pause{color:var(--gold)}
 .btns{display:flex;gap:10px}
@@ -34,7 +44,9 @@ button.go{background:var(--go);color:#0b1a10;border-color:var(--go)}
 button.pause{background:var(--gold);color:#221a05;border-color:var(--gold)}
 button.stop{background:var(--hot);color:#250d03;border-color:var(--hot)}
 button.small{min-height:36px;font-size:13px;padding:0 12px;flex:none;border-radius:999px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips{display:flex;gap:6px;margin:8px -14px 0;padding:0 14px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;flex:none}
+.chips::-webkit-scrollbar{display:none}
+.chips:empty{display:none}
 .chip{font:600 13px system-ui;background:#222327;border:1px solid var(--line);border-radius:999px;padding:6px 11px;color:var(--ink);cursor:pointer;flex:none;min-height:0}
 .weeknav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .weeknav .lbl{flex:1;text-align:center;font:600 14px system-ui}
@@ -77,32 +89,38 @@ dialog h3{margin:0 0 4px;font-size:17px}
     <div class="chips" id="recent"></div>
     <label for="notes">Notes (optional)</label>
     <textarea id="notes" rows="2" placeholder="Anything worth remembering"></textarea>
-    <div class="clock" id="clock">0:00:00</div>
-    <div class="status" id="status"></div>
+    <div class="clockwrap">
+      <div class="clock" id="clock">0:00:00</div>
+      <div class="status" id="status"></div>
+    </div>
     <div class="btns" id="btns"></div>
   </section>
 
-  <section class="card">
-    <div class="weeknav">
-      <button id="prevWk" aria-label="Previous week">‹</button>
-      <div class="lbl" id="wkLbl"></div>
-      <button id="nextWk" aria-label="Next week">›</button>
-    </div>
+  <div class="tabs">
+    <button id="openWeek">This week<small id="wkTab">0:00</small></button>
+    <button id="openLog">Log<small id="logTab">0 entries</small></button>
+  </div>
+</main>
+
+<dialog class="sheet" id="weekSheet">
+  <div class="sh"><h3>This week</h3><button class="small" data-close>Done</button></div>
+  <div class="sb">
+    <div class="weeknav"><button class="prevWk" aria-label="Previous week">‹</button><div class="lbl wkLbl"></div><button class="nextWk" aria-label="Next week">›</button></div>
     <div class="total" id="wkTot">0:00</div>
     <h2>By task</h2>
     <div id="byTask"></div>
-  </section>
+    <div class="tools"><button class="small" id="csvWk">Export week (CSV)</button></div>
+  </div>
+</dialog>
 
-  <section class="card">
-    <h2 style="display:flex;justify-content:space-between;align-items:center;margin:0">Log
-      <button class="small" id="addBtn">+ Add entry</button></h2>
+<dialog class="sheet" id="logSheet">
+  <div class="sh"><h3>Log</h3><button class="small" id="addBtn">+ Add</button><button class="small" data-close>Done</button></div>
+  <div class="sb">
+    <div class="weeknav"><button class="prevWk" aria-label="Previous week">‹</button><div class="lbl wkLbl"></div><button class="nextWk" aria-label="Next week">›</button></div>
     <div id="log"></div>
-    <div class="tools">
-      <button class="small" id="csvWk">Export week (CSV)</button>
-      <button class="small" id="csvAll">Export all (CSV)</button>
-    </div>
-  </section>
-</main>
+    <div class="tools"><button class="small" id="csvAll">Export all (CSV)</button></div>
+  </div>
+</dialog>
 
 <dialog id="dlg">
   <form method="dialog" id="form">
@@ -214,7 +232,7 @@ function renderRecent(){
   const seen=new Set(), list=[];
   [...S.entries].sort((a,b)=>b.start-a.start).forEach(e=>{ const k=e.task.trim(); if(k && !seen.has(k.toLowerCase())){ seen.add(k.toLowerCase()); list.push(k); } });
   $('taskList').innerHTML=list.map(t=>'<option value="'+esc(t)+'">').join('');
-  $('recent').innerHTML=list.slice(0,6).map(t=>'<button class="chip" type="button">'+esc(t)+'</button>').join('');
+  $('recent').innerHTML=list.slice(0,8).map(t=>'<button class="chip" type="button">'+esc(t)+'</button>').join('');
   [...$('recent').children].forEach((c,i)=>c.onclick=()=>{ $('task').value=list[i]; if(S.run){S.run.task=list[i]; save();} });
 }
 
@@ -223,8 +241,8 @@ function weekEntries(){ const a=weekStart(weekOffset), b=a+7*864e5; return S.ent
 function renderWeek(){
   const a=weekStart(weekOffset), b=new Date(a+6*864e5);
   const f=d=>new Date(d).toLocaleDateString([], {month:'short', day:'numeric'});
-  $('wkLbl').textContent = weekOffset===0 ? 'This week · '+f(a)+' – '+f(b) : f(a)+' – '+f(b);
-  $('nextWk').disabled = weekOffset>=0; $('nextWk').style.opacity = weekOffset>=0 ? .35 : 1;
+  document.querySelectorAll('.wkLbl').forEach(el=>el.textContent = (weekOffset===0 ? 'This week · ' : '')+f(a)+' – '+f(b));
+  document.querySelectorAll('.nextWk').forEach(n=>{ n.disabled = weekOffset>=0; n.style.opacity = weekOffset>=0 ? .35 : 1; });
   const es=weekEntries();
   const total=es.reduce((s,e)=>s+e.ms,0);
   $('wkTot').textContent=hm(total);
@@ -249,8 +267,17 @@ function renderWeek(){
   }).join('') : '<div class="empty" style="margin-top:10px">No entries this week.</div>';
   $('log').querySelectorAll('.entry').forEach(el=>el.onclick=()=>openEdit(el.dataset.id));
 }
-$('prevWk').onclick=()=>{ weekOffset--; renderWeek(); };
-$('nextWk').onclick=()=>{ if(weekOffset<0){ weekOffset++; renderWeek(); } };
+document.querySelectorAll('.prevWk').forEach(b=>b.onclick=()=>{ weekOffset--; renderWeek(); });
+document.querySelectorAll('.nextWk').forEach(b=>b.onclick=()=>{ if(weekOffset<0){ weekOffset++; renderWeek(); } });
+function openSheet(id){ weekOffset=0; renderWeek(); $(id).showModal(); }
+$('openWeek').onclick=()=>openSheet('weekSheet');
+$('openLog').onclick=()=>openSheet('logSheet');
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+function renderTabs(){
+  const a=weekStart(0), es=S.entries.filter(e=>e.start>=a);
+  $('wkTab').textContent=hm(es.reduce((s,e)=>s+e.ms,0));
+  $('logTab').textContent=es.length+(es.length===1?' entry':' entries')+' this week';
+}
 
 /* ---------- edit / add ---------- */
 const toDateInput = t => dayKey(t);
@@ -310,7 +337,7 @@ $('csvWk').onclick=()=>csv(weekEntries(), 'timer-week-'+dayKey(weekStart(weekOff
 $('csvAll').onclick=()=>csv(S.entries, 'timer-all-'+dayKey(Date.now())+'.csv');
 
 /* ---------- boot ---------- */
-function render(){ renderRecent(); renderTimer(); renderWeek(); }
+function render(){ renderRecent(); renderTimer(); renderWeek(); renderTabs(); }
 if(S.run){ $('task').value=S.run.task||''; $('notes').value=S.run.notes||''; }
 render();
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) tick(); });
